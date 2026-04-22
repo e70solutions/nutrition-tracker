@@ -307,18 +307,234 @@ const BALKAN_DB=[
   {n:'Pileci but pecen',k:215,p:22,c:0,f:14},{n:'Svinjski kotlet pecen',k:235,p:24,c:0,f:15},{n:'Jagnjeće pečenje',k:265,p:22,c:0,f:19},
 ];
 
+// Napomena: unosi sa "parce" su kalkulisani na tipičnu gramažu jednog parčeta
+// Vrednosti verifikovane prema domaćim i USDA izvorima
 const LOCAL_DB=[
-  {n:'Piletina kuvana',k:165,p:31,c:0,f:3.6},{n:'Piletina pečena',k:239,p:27,c:0,f:14},{n:'Govedina kuvana',k:250,p:26,c:0,f:17},
-  {n:'Losos',k:208,p:20,c:0,f:13},{n:'Tuna iz konzerve',k:116,p:26,c:0,f:1},{n:'Jaje celo',k:155,p:13,c:1.1,f:11},
-  {n:'Mleko 3.2%',k:61,p:3.2,c:4.7,f:3.3},{n:'Jogurt obični',k:59,p:3.5,c:4.7,f:3.3},{n:'Jogurt grčki',k:97,p:9,c:3.6,f:5},
-  {n:'Sir edamer',k:357,p:25,c:1.4,f:28},{n:'Sir beli feta',k:264,p:18,c:2,f:21},{n:'Svježi sir',k:98,p:11,c:3.4,f:4.3},
-  {n:'Ovas zobene pahuljice',k:389,p:17,c:66,f:7},{n:'Pirinač beli kuvan',k:130,p:2.7,c:28,f:0.3},{n:'Testenina kuvana',k:158,p:5.8,c:31,f:0.9},
-  {n:'Kruh beli',k:265,p:9,c:49,f:3.2},{n:'Krompir kuvan',k:87,p:1.9,c:20,f:0.1},{n:'Banana',k:89,p:1.1,c:23,f:0.3},
-  {n:'Jabuka',k:52,p:0.3,c:14,f:0.2},{n:'Narandža',k:47,p:0.9,c:12,f:0.1},{n:'Jagode',k:32,p:0.7,c:7.7,f:0.3},
-  {n:'Brokoli',k:34,p:2.8,c:7,f:0.4},{n:'Špinat',k:23,p:2.9,c:3.6,f:0.4},{n:'Paradajz',k:18,p:0.9,c:3.9,f:0.2},
-  {n:'Maslinovo ulje',k:884,p:0,c:0,f:100},{n:'Puter',k:717,p:0.9,c:0.1,f:81},{n:'Bademi',k:579,p:21,c:22,f:50},
-  {n:'Orasi',k:654,p:15,c:14,f:65},{n:'Pasulj kuvan',k:127,p:8.7,c:23,f:0.5},{n:'Protein prah whey',k:400,p:80,c:10,f:5},
-  {n:'Kafa bez šećera',k:2,p:0.3,c:0,f:0},{n:'Šunka',k:145,p:18,c:1.5,f:7},{n:'Čokolada tamna 70%',k:598,p:7.8,c:46,f:43},
+  // ── MESO I RIBA ──────────────────────────────
+  {n:'Piletina kuvana',k:165,p:31,c:0,f:3.6},
+  {n:'Piletina pečena',k:239,p:27,c:0,f:14},
+  {n:'Govedina kuvana',k:250,p:26,c:0,f:17},
+  {n:'Svinjetina pečena',k:242,p:27,c:0,f:14},
+  {n:'Losos',k:208,p:20,c:0,f:13},
+  {n:'Tuna iz konzerve',k:116,p:26,c:0,f:1},
+  {n:'Skuša',k:205,p:19,c:0,f:14},
+  // ── SUHOMESNATO (vrednosti na 100g, tipično parče ~20-25g) ───────────
+  {n:'Pečenica',k:345,p:15,c:1,f:30,note:'100g | 1 parče ~20g = 69kcal'},
+  {n:'Pečenica 1 parče (20g)',k:345,p:15,c:1,f:30,qty:20,note:'tanko isečeno'},
+  {n:'Šunka kuvana',k:145,p:18,c:1.5,f:7,note:'100g'},
+  {n:'Šunka 1 parče (25g)',k:145,p:18,c:1.5,f:7,qty:25},
+  {n:'Salama',k:336,p:18,c:1,f:29,note:'100g'},
+  {n:'Salama 1 parče (15g)',k:336,p:18,c:1,f:29,qty:15},
+  {n:'Pršuta',k:215,p:28,c:0,f:11,note:'100g'},
+  {n:'Pršuta 1 parče (15g)',k:215,p:28,c:0,f:11,qty:15},
+  {n:'Mortadela',k:285,p:14,c:2,f:25,note:'100g'},
+  {n:'Mortadela 1 parče (20g)',k:285,p:14,c:2,f:25,qty:20},
+  {n:'Parizijaner',k:260,p:15,c:2,f:22,note:'100g'},
+  {n:'Parizijaner 1 parče (20g)',k:260,p:15,c:2,f:22,qty:20},
+  // ── JAJA ─────────────────────────────────────
+  {n:'Jaje celo (1 kom, ~60g)',k:155,p:13,c:1.1,f:11,qty:60},
+  {n:'Jaje belo (1 kom)',k:52,p:11,c:0.7,f:0.2,qty:30},
+  // ── MLEČNI PROIZVODI ─────────────────────────
+  {n:'Mleko 3.2%',k:61,p:3.2,c:4.7,f:3.3},
+  {n:'Mleko 1.5%',k:46,p:3.4,c:4.8,f:1.5},
+  {n:'Jogurt obični',k:59,p:3.5,c:4.7,f:3.3},
+  {n:'Jogurt grčki',k:97,p:9,c:3.6,f:5},
+  {n:'Jogurt 0% masti',k:35,p:5,c:4.1,f:0.2},
+  {n:'Kiselo mleko',k:63,p:3.3,c:4.8,f:3.5},
+  // ── SIREVI (na 100g i po kriški/parčetu) ─────
+  {n:'Gauda',k:356,p:25,c:2.2,f:27,note:'100g — izvor: keepitfit.rs/kalorije.hr'},
+  {n:'Gauda 1 kriška (20g)',k:356,p:25,c:2.2,f:27,qty:20,note:'tanka kriška za sendvič'},
+  {n:'Gauda 1 deblja kriška (30g)',k:356,p:25,c:2.2,f:27,qty:30},
+  {n:'Sir edamer',k:357,p:25,c:1.4,f:28,note:'100g'},
+  {n:'Sir edamer 1 kriška (20g)',k:357,p:25,c:1.4,f:28,qty:20},
+  {n:'Sir beli (feta)',k:264,p:18,c:2,f:21,note:'100g'},
+  {n:'Svježi sir',k:98,p:11,c:3.4,f:4.3},
+  {n:'Mozzarella',k:280,p:22,c:2.2,f:22,note:'100g'},
+  {n:'Mozzarella 1 kriška (20g)',k:280,p:22,c:2.2,f:22,qty:20},
+  {n:'Parmezan',k:420,p:38,c:3.2,f:29,note:'100g'},
+  {n:'Trapist',k:330,p:24,c:1,f:26,note:'100g'},
+  {n:'Trapist 1 kriška (20g)',k:330,p:24,c:1,f:26,qty:20},
+  {n:'Sir za mazanje (Zdenka/ABC)',k:241,p:6.5,c:4,f:22,note:'100g — izvor: keepitfit.rs'},
+  {n:'Sir za mazanje 1 porcija (20g)',k:241,p:6.5,c:4,f:22,qty:20,note:'1 trouglić/1 kašika'},
+  {n:'Krem sir Philadelphia',k:342,p:6,c:4.1,f:34,note:'100g — izvor: keepitfit.rs'},
+  {n:'Krem sir Philadelphia 1 kašika (15g)',k:342,p:6,c:4.1,f:34,qty:15},
+  {n:'Krem sir Philadelphia 1 porcija (30g)',k:342,p:6,c:4.1,f:34,qty:30},
+  {n:'Krem sir light (~20% masti)',k:156,p:5,c:3.8,f:13,note:'100g — izvor: keepitfit.rs'},
+  {n:'Kajmak',k:381,p:5,c:2,f:40,note:'100g'},
+  {n:'Kajmak 1 kašika (20g)',k:381,p:5,c:2,f:40,qty:20},
+  {n:'Pavlaka kisela',k:193,p:3.5,c:3.6,f:19,note:'100g'},
+  // ── HLEB — na 100g ───────────────────────────
+  {n:'Hleb beli',k:265,p:9,c:49,f:3.2,note:'100g — izvor: onefit.rs'},
+  {n:'Hleb integralni (crni)',k:247,p:13,c:41,f:4.3,note:'100g — izvor: onefit.rs'},
+  {n:'Hleb ražani',k:259,p:8,c:48,f:3.5,note:'100g — izvor: receptopedija.com'},
+  {n:'Hleb ovseni',k:375,p:13.4,c:65,f:8.3,note:'100g — izvor: deuscrispbread.com'},
+  {n:'Hleb graham',k:206,p:8,c:40,f:3,note:'100g'},
+  {n:'Hleb sa semenkama (mešani)',k:270,p:10,c:42,f:7,note:'100g — semenke lana, susama, bundeve'},
+  {n:'Hleb sa susamom',k:268,p:9.5,c:46,f:5.5,note:'100g'},
+  {n:'Hleb sa lanom',k:262,p:10,c:40,f:6.5,note:'100g'},
+  {n:'Hleb spelta (pir)',k:243,p:10,c:43,f:3.5,note:'100g'},
+  {n:'Hleb kukuruzni (proja)',k:227,p:5,c:44,f:2.5,note:'100g'},
+  {n:'Hleb bezglutenski',k:255,p:3.5,c:52,f:3.8,note:'100g — prosek'},
+  {n:'Tost hleb beli',k:279,p:10,c:49,f:4,note:'100g'},
+  {n:'Dvopek',k:412,p:11,c:82,f:5,note:'100g'},
+  // ── HLEB — po parčetu (tipična gramaža) ──────
+  {n:'Hleb beli 1 kriška (30g)',k:265,p:9,c:49,f:3.2,qty:30,note:'standardna kriška vekne'},
+  {n:'Hleb beli 1 kriška deblja (45g)',k:265,p:9,c:49,f:3.2,qty:45,note:'deblja kriška'},
+  {n:'Hleb integralni 1 kriška (35g)',k:247,p:13,c:41,f:4.3,qty:35,note:'standardna kriška'},
+  {n:'Hleb ražani 1 kriška (35g)',k:259,p:8,c:48,f:3.5,qty:35},
+  {n:'Hleb ovseni 1 kriška (35g)',k:375,p:13.4,c:65,f:8.3,qty:35},
+  {n:'Hleb sa semenkama 1 kriška (35g)',k:270,p:10,c:42,f:7,qty:35},
+  {n:'Hleb graham 1 kriška (35g)',k:206,p:8,c:40,f:3,qty:35},
+  {n:'Tost hleb 1 kriška (25g)',k:279,p:10,c:49,f:4,qty:25},
+  {n:'Dvopek 1 komad (10g)',k:412,p:11,c:82,f:5,qty:10},
+  // ── PECIVA ───────────────────────────────────
+  {n:'Kifla (1 kom ~60g)',k:298,p:9,c:50,f:7,qty:60},
+  {n:'Perec (1 kom ~80g)',k:380,p:10,c:72,f:5,qty:80},
+  {n:'Kroasan (1 kom ~80g)',k:406,p:8,c:45,f:21,qty:80},
+  {n:'Mekice/uštipci (1 kom ~40g)',k:320,p:7,c:42,f:14,qty:40},
+  // ── ŽITARICE I SKROB ─────────────────────────
+  {n:'Ovas/zobene pahuljice',k:389,p:17,c:66,f:7},
+  {n:'Pirinač beli kuvan',k:130,p:2.7,c:28,f:0.3},
+  {n:'Pirinač integralni kuvan',k:111,p:2.6,c:23,f:0.9},
+  {n:'Testenina kuvana',k:158,p:5.8,c:31,f:0.9},
+  {n:'Krompir kuvan',k:87,p:1.9,c:20,f:0.1},
+  // ── VOĆE ─────────────────────────────────────
+  {n:'Banana',k:89,p:1.1,c:23,f:0.3},
+  {n:'Jabuka',k:52,p:0.3,c:14,f:0.2},
+  {n:'Narandža',k:47,p:0.9,c:12,f:0.1},
+  {n:'Jagode',k:32,p:0.7,c:7.7,f:0.3},
+  {n:'Grožđe',k:67,p:0.6,c:17,f:0.4},
+  {n:'Kruška',k:57,p:0.4,c:15,f:0.1},
+  {n:'Breskva',k:39,p:0.9,c:10,f:0.3},
+  {n:'Šljiva',k:46,p:0.7,c:11,f:0.3},
+  {n:'Kivi',k:61,p:1.1,c:15,f:0.5},
+  {n:'Lubenica',k:30,p:0.6,c:7.6,f:0.2},
+  // ── POVRĆE ───────────────────────────────────
+  {n:'Brokoli',k:34,p:2.8,c:7,f:0.4},
+  {n:'Špinat',k:23,p:2.9,c:3.6,f:0.4},
+  {n:'Paradajz',k:18,p:0.9,c:3.9,f:0.2},
+  {n:'Krastavac',k:15,p:0.7,c:3.6,f:0.1},
+  {n:'Paprika crvena',k:31,p:1,c:6,f:0.3},
+  {n:'Mrkva',k:41,p:0.9,c:10,f:0.2},
+  {n:'Luk',k:40,p:1.1,c:9.3,f:0.1},
+  {n:'Tikvice',k:17,p:1.2,c:3.1,f:0.3},
+  {n:'Pečurke',k:22,p:3.1,c:3.3,f:0.3},
+  // ── MASTI I NAMAZI ───────────────────────────
+  {n:'Maslinovo ulje',k:884,p:0,c:0,f:100},
+  {n:'Suncokretovo ulje',k:884,p:0,c:0,f:100},
+  {n:'Puter',k:717,p:0.9,c:0.1,f:81},
+  {n:'Puter 1 kašičica (10g)',k:717,p:0.9,c:0.1,f:81,qty:10},
+  {n:'Margarin',k:720,p:0.4,c:0.5,f:80},
+  {n:'Majonez',k:680,p:1,c:0.6,f:75},
+  {n:'Nutella',k:546,p:6.3,c:57,f:31},
+  {n:'Nutella 1 kašika (15g)',k:546,p:6.3,c:57,f:31,qty:15},
+  {n:'Med',k:304,p:0.3,c:82,f:0},
+  {n:'Med 1 kašičica (10g)',k:304,p:0.3,c:82,f:0,qty:10},
+  // ── ORAŠASTI PLODOVI ─────────────────────────
+  {n:'Bademi',k:579,p:21,c:22,f:50},
+  {n:'Orasi',k:654,p:15,c:14,f:65},
+  {n:'Kikiriki',k:567,p:26,c:16,f:49},
+  {n:'Lešnik',k:628,p:15,c:17,f:61},
+  {n:'Kikirikijevo maslo',k:588,p:25,c:20,f:50},
+  // ── MAHUNARKE ────────────────────────────────
+  {n:'Pasulj kuvan',k:127,p:8.7,c:23,f:0.5},
+  {n:'Leblebija kuvana',k:164,p:8.9,c:27,f:2.6},
+  {n:'Sočivo kuvano',k:116,p:9,c:20,f:0.4},
+  // ── SUPLEMENTI ───────────────────────────────
+  {n:'Protein prah whey',k:400,p:80,c:10,f:5},
+  {n:'Čokolada tamna 70%',k:598,p:7.8,c:46,f:43},
+  {n:'Šećer beli',k:387,p:0,c:100,f:0},
+
+  // ══════════════════════════════════════════════
+  // PIĆA — vrednosti na 100ml, porcije u ml
+  // Izvor: keepitfit.rs, kalorije.hr, redbull.com
+  // ══════════════════════════════════════════════
+
+  // ── VODA I ČAJEVI ────────────────────────────
+  {n:'Voda',k:0,p:0,c:0,f:0},
+  {n:'Gazirana voda',k:0,p:0,c:0,f:0},
+  {n:'Čaj zeleni (bez šećera)',k:1,p:0,c:0.2,f:0},
+  {n:'Čaj crni (bez šećera)',k:1,p:0,c:0.3,f:0},
+  {n:'Čaj sa šećerom (1 kašičica)',k:1,p:0,c:0.3,f:0,note:'dodaj ~20kcal za 1 kašičicu šećera'},
+  {n:'Kafa espresso (30ml)',k:9,p:0.1,c:1.7,f:0.2,qty:30,note:'jedna šoljica'},
+  {n:'Kafa sa mlekom (200ml)',k:30,p:1.5,c:3,f:1.2,qty:200},
+  {n:'Kafa sa mlekom i šećerom (200ml)',k:50,p:1.5,c:7,f:1.2,qty:200},
+  {n:'Kapućino (200ml)',k:60,p:3,c:6,f:2.5,qty:200},
+  {n:'Latte (300ml)',k:120,p:6,c:12,f:4.5,qty:300},
+
+  // ── MLEKO I JOGURT ZA PIĆE ──────────────────
+  {n:'Mleko 3.2% (čaša 200ml)',k:61,p:3.2,c:4.7,f:3.3,qty:200,note:'izvor: onefit.rs'},
+  {n:'Mleko 1.5% (čaša 200ml)',k:46,p:3.4,c:4.8,f:1.5,qty:200},
+  {n:'Jogurt za piće 3.2% (boca 200ml)',k:59,p:3.5,c:4.7,f:3.3,qty:200,note:'tečni jogurt'},
+  {n:'Jogurt za piće 3.2% (boca 330ml)',k:59,p:3.5,c:4.7,f:3.3,qty:330},
+  {n:'Jogurt za piće 0% (boca 200ml)',k:35,p:5,c:4.1,f:0.2,qty:200},
+  {n:'Actimel/probiotski jogurt (100ml)',k:70,p:2.8,c:11,f:1.5,qty:100,note:'1 flašica'},
+  {n:'Kiselo mleko (čaša 200ml)',k:63,p:3.3,c:4.8,f:3.5,qty:200},
+  {n:'Kefir (čaša 200ml)',k:52,p:3.5,c:4.8,f:2.5,qty:200},
+  {n:'Čokoladno mleko (200ml)',k:84,p:3.5,c:12,f:2.8,qty:200},
+
+  // ── SOKOVI (100ml) ───────────────────────────
+  {n:'Sok od narandže 100% (100ml)',k:45,p:0.7,c:10,f:0.2,note:'svežecedeni/bez dodataka'},
+  {n:'Sok od narandže 100% (čaša 200ml)',k:45,p:0.7,c:10,f:0.2,qty:200},
+  {n:'Sok od jabuke 100% (100ml)',k:46,p:0.1,c:11,f:0.1},
+  {n:'Sok od jabuke 100% (čaša 200ml)',k:46,p:0.1,c:11,f:0.1,qty:200},
+  {n:'Sok od grožđa 100% (100ml)',k:60,p:0.3,c:14,f:0.1},
+  {n:'Sok od paradajza (100ml)',k:17,p:0.9,c:3.5,f:0.2},
+  {n:'Multivitamin sok (100ml)',k:48,p:0.4,c:11,f:0.1,note:'prosek Bravo/Next/Rauch'},
+  {n:'Multivitamin sok (200ml)',k:48,p:0.4,c:11,f:0.1,qty:200},
+  {n:'Limunada domaća (200ml)',k:38,p:0.1,c:9.5,f:0,qty:200,note:'zavisi od šećera'},
+
+  // ── GAZIRANA PIĆA (100ml) ────────────────────
+  {n:'Coca-Cola',k:44,p:0,c:11,f:0,note:'izvor: keepitfit.rs — 44kcal/100ml'},
+  {n:'Coca-Cola (limenka 330ml)',k:44,p:0,c:11,f:0,qty:330,note:'~145kcal ukupno'},
+  {n:'Coca-Cola (flaša 500ml)',k:44,p:0,c:11,f:0,qty:500},
+  {n:'Coca-Cola Zero',k:0.2,p:0,c:0,f:0,note:'zaslađivači, zanemarivo kalorija'},
+  {n:'Coca-Cola Zero (limenka 330ml)',k:0.2,p:0,c:0,f:0,qty:330},
+  {n:'Coca-Cola Zero (flaša 500ml)',k:0.2,p:0,c:0,f:0,qty:500},
+  {n:'Pepsi',k:43,p:0,c:10.8,f:0,note:'izvor: covermagazin.com'},
+  {n:'Pepsi (limenka 330ml)',k:43,p:0,c:10.8,f:0,qty:330},
+  {n:'Pepsi Max / Zero',k:0.3,p:0,c:0,f:0},
+  {n:'Pepsi Max (limenka 330ml)',k:0.3,p:0,c:0,f:0,qty:330},
+  {n:'Fanta narandža',k:42,p:0,c:10.5,f:0,note:'izvor: keepitfit.rs'},
+  {n:'Fanta (limenka 330ml)',k:42,p:0,c:10.5,f:0,qty:330},
+  {n:'Sprite',k:43,p:0,c:10.7,f:0,note:'izvor: dnevnikishrane.com'},
+  {n:'Sprite (limenka 330ml)',k:43,p:0,c:10.7,f:0,qty:330},
+  {n:'Cockta',k:42,p:0,c:10.5,f:0,note:'izvor: covermagazin.com'},
+  {n:'Cockta (limenka 330ml)',k:42,p:0,c:10.5,f:0,qty:330},
+  {n:'Schweppes tonic (100ml)',k:34,p:0,c:8.5,f:0},
+  {n:'Schweppes tonic (limenka 330ml)',k:34,p:0,c:8.5,f:0,qty:330},
+
+  // ── ENERGETSKA PIĆA (100ml) ──────────────────
+  {n:'Red Bull',k:45,p:0,c:11,f:0,note:'izvor: redbull.com — 11g šećera/100ml'},
+  {n:'Red Bull (limenka 250ml)',k:45,p:0,c:11,f:0,qty:250,note:'~113kcal ukupno'},
+  {n:'Red Bull (limenka 355ml)',k:45,p:0,c:11,f:0,qty:355},
+  {n:'Red Bull Sugar Free',k:3,p:0,c:0.3,f:0,note:'bez šećera, zaslađivači'},
+  {n:'Red Bull Sugar Free (250ml)',k:3,p:0,c:0.3,f:0,qty:250},
+  {n:'Monster Energy',k:44,p:0,c:11,f:0,note:'izvor: keepitfit.rs — 44kcal/100ml'},
+  {n:'Monster Energy (limenka 500ml)',k:44,p:0,c:11,f:0,qty:500,note:'~220kcal ukupno'},
+  {n:'Monster Energy (limenka 250ml)',k:44,p:0,c:11,f:0,qty:250},
+  {n:'Monster Ultra (zero sugar)',k:2,p:0,c:0.5,f:0,note:'bez šećera'},
+  {n:'Monster Ultra (500ml)',k:2,p:0,c:0.5,f:0,qty:500},
+  {n:'Burn energetsko piće (250ml)',k:46,p:0,c:11.5,f:0,qty:250},
+  {n:'Hell Energy (250ml)',k:45,p:0,c:11.2,f:0,qty:250},
+  {n:'Guarana energetsko piće (250ml)',k:50,p:0,c:12.5,f:0,qty:250},
+
+  // ── ALKOHOL ──────────────────────────────────
+  {n:'Pivo svetlo (100ml)',k:43,p:0.5,c:3.6,f:0,note:'tipično domaće svetlo pivo'},
+  {n:'Pivo svetlo (flaša 330ml)',k:43,p:0.5,c:3.6,f:0,qty:330,note:'~142kcal'},
+  {n:'Pivo svetlo (flaša 500ml)',k:43,p:0.5,c:3.6,f:0,qty:500},
+  {n:'Pivo tamno (100ml)',k:49,p:0.6,c:4.8,f:0},
+  {n:'Pivo tamno (flaša 330ml)',k:49,p:0.6,c:4.8,f:0,qty:330},
+  {n:'Pivo bezalkoholno (100ml)',k:21,p:0.5,c:4.4,f:0},
+  {n:'Vino belo (100ml)',k:82,p:0.1,c:2.6,f:0},
+  {n:'Vino belo (čaša 150ml)',k:82,p:0.1,c:2.6,f:0,qty:150},
+  {n:'Vino crveno (100ml)',k:85,p:0.1,c:2.6,f:0},
+  {n:'Vino crveno (čaša 150ml)',k:85,p:0.1,c:2.6,f:0,qty:150},
+  {n:'Vino rosé (100ml)',k:80,p:0.1,c:2.5,f:0},
+  {n:'Rakija šljivovica (100ml)',k:224,p:0,c:0,f:0,note:'~40% alkohola'},
+  {n:'Rakija šljivovica (čokanjčić 30ml)',k:224,p:0,c:0,f:0,qty:30},
+  {n:'Viski/votka/džin (100ml)',k:231,p:0,c:0,f:0,note:'~40% alkohola'},
+  {n:'Viski/votka (čašica 40ml)',k:231,p:0,c:0,f:0,qty:40},
 ];
 
 let currentUser=null,foods=[],weights=[],goals={kcal:2000,prot:150,carb:250,fat:70};
@@ -480,8 +696,8 @@ function setSearchMode(mode,btn){searchMode=mode;document.querySelectorAll('.sta
 function onSearchInput(q){clearTimeout(searchTimer);if(!q||q.length<2){closeDrop();return;}searchTimer=setTimeout(()=>doSearch(q),380);}
 async function doSearch(q){
   const ql=q.toLowerCase();let results=[];
-  if(searchMode==='all'||searchMode==='balkan')results=results.concat(BALKAN_DB.filter(f=>f.n.toLowerCase().includes(ql)).slice(0,6).map(f=>({name:f.n,k100:f.k,p100:f.p,c100:f.c,f100:f.f,src:'balkan',note:f.note||''})));
-  if(searchMode==='all'||searchMode==='local')results=results.concat(LOCAL_DB.filter(f=>f.n.toLowerCase().includes(ql)).slice(0,4).map(f=>({name:f.n,k100:f.k,p100:f.p,c100:f.c,f100:f.f,src:'local'})));
+  if(searchMode==='all'||searchMode==='balkan')results=results.concat(BALKAN_DB.filter(f=>f.n.toLowerCase().includes(ql)).slice(0,6).map(f=>({name:f.n,k100:f.k,p100:f.p,c100:f.c,f100:f.f,src:'balkan',presetQty:f.qty||null,note:f.note||''})));
+  if(searchMode==='all'||searchMode==='local')results=results.concat(LOCAL_DB.filter(f=>f.n.toLowerCase().includes(ql)).slice(0,4).map(f=>({name:f.n,k100:f.k,p100:f.p,c100:f.c,f100:f.f,src:'local',presetQty:f.qty||null,note:f.note||''})));
   showDrop(results,true);
   if(searchMode==='all'||searchMode==='usda'){
     setSpinner(true);
@@ -501,7 +717,7 @@ function showDrop(results,partial){
   if(!results.length&&!partial){drop.style.display='block';drop.innerHTML='<div class="no-results">Nema rezultata. Unesi ručno ispod.</div>';return;}
   if(!results.length)return;
   drop.style.display='block';drop._results=results;
-  drop.innerHTML=results.map((f,i)=>`<div class="si" onclick="selectFood(${i})"><div class="si-name">${f.name}${f.note?` <span style="color:var(--text3);font-size:10px">(${f.note})</span>`:''}</div><span class="si-src src-${f.src}">${f.src==='usda'?'USDA':f.src==='balkan'?'Balkan':'Osnovna'}</span><span class="si-macros">${r(f.k100)} kcal P:${r(f.p100)} K:${r(f.c100)} M:${r(f.f100)}</span></div>`).join('');
+  drop.innerHTML=results.map((f,i)=>`<div class="si" onclick="selectFood(${i})"><div class="si-name">${f.name}${f.note?` <span style="color:var(--text3);font-size:10px">(${f.note})</span>`:''}</div><span class="si-src src-${f.src}">${f.src==='usda'?'USDA':f.src==='balkan'?'Balkan':'Osnovna'}</span><span class="si-macros">${r(f.k100)} kcal P:${r(f.p100)} K:${r(f.c100)} M:${r(f.f100)}${f.presetQty?` <b style="color:var(--text)">(${f.presetQty}g)</b>`:''}</span></div>`).join('');
 }
 function closeDrop(){document.getElementById('search-drop').style.display='none';}
 function selectFood(i){
@@ -509,7 +725,9 @@ function selectFood(i){
   document.getElementById('c-name').value=f.name;
   document.getElementById('c-kcal').value=r1(f.k100);document.getElementById('c-prot').value=r1(f.p100);
   document.getElementById('c-carb').value=r1(f.c100);document.getElementById('c-fat').value=r1(f.f100);
-  document.getElementById('c-qty').value=100;document.getElementById('food-search').value=f.name;
+  // Koristi preset qty ako postoji (npr. "1 kriška 30g"), inače 100g
+  document.getElementById('c-qty').value=f.presetQty||100;
+  document.getElementById('food-search').value=f.name;
   closeDrop();updateQtyPreview();document.getElementById('c-qty').focus();
 }
 document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))closeDrop();});
