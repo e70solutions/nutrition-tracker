@@ -250,8 +250,63 @@ input:focus,select:focus{outline:none;border-color:var(--blue)}
   </div>
 
   <div id="tab-goals" class="panel">
+    <!-- TDEE KALKULATOR -->
     <div class="card">
-      <div class="card-title">Dnevni ciljevi</div>
+      <div class="card-title">⚡ TDEE Kalkulator</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6">
+        <strong>TDEE</strong> (Total Daily Energy Expenditure) je broj kalorija koje trebaju vašem telu svakodnevno. Kalkulator koristi <strong>Harris-Benedict formulu</strong> + faktor aktivnosti.
+      </div>
+      
+      <div class="form-row f2">
+        <div><label>Pol</label><select id="tdee-pol"><option value="m">Muški</option><option value="f">Ženski</option></select></div>
+        <div><label>Starost (godine)</label><input type="number" id="tdee-age" placeholder="30" min="15" max="100"></div>
+      </div>
+      
+      <div class="form-row f2">
+        <div><label>Visina (cm)</label><input type="number" id="tdee-height" placeholder="180" min="120" max="250"></div>
+        <div><label>Težina (kg)</label><input type="number" id="tdee-weight" placeholder="75" min="30" max="250"></div>
+      </div>
+      
+      <div><label>Nivo aktivnosti</label>
+        <select id="tdee-activity" style="width:100%;margin-bottom:.625rem">
+          <option value="1.2">Sedentarni (malo/bez vežbanja)</option>
+          <option value="1.375">Malo aktivni (1-3 dana vežbanja/nedelji)</option>
+          <option value="1.55" selected>Umeren (3-5 dana vežbanja/nedelji)</option>
+          <option value="1.725">Veoma aktivni (6-7 dana vežbanja/nedelji)</option>
+          <option value="1.9">Ekstremno aktivni (svakodnevno intenzivno)</option>
+        </select>
+      </div>
+      
+      <div><label>Tvoj cilj</label>
+        <select id="tdee-goal" style="width:100%;margin-bottom:1rem">
+          <option value="lose">Mršavljenje (deficit 500 kcal)</option>
+          <option value="maintain" selected>Održavanje (bez promene)</option>
+          <option value="gain">Dobijanje mase (suficit 500 kcal)</option>
+        </select>
+      </div>
+      
+      <button class="btn btn-primary btn-full" onclick="calcTDEE()">Izračunaj TDEE i postavi ciljeve</button>
+      
+      <div id="tdee-result" style="display:none;margin-top:1rem;padding:1rem;background:var(--bg2);border-radius:var(--r)">
+        <div style="font-size:12px;margin-bottom:.5rem;color:var(--text2)"><strong>Tvoji preporučeni dnevni unosi:</strong></div>
+        <div style="font-size:18px;font-weight:600;margin-bottom:.75rem">
+          <span style="color:var(--blue)"><span id="tdee-kcal-val">2000</span> kcal</span>
+        </div>
+        <div style="font-size:13px;line-height:1.8">
+          <div>📊 <strong>Proteini:</strong> <span id="tdee-prot-val">150</span>g (30% kalorija)</div>
+          <div>📊 <strong>Hidrati:</strong> <span id="tdee-carb-val">250</span>g (50% kalorija)</div>
+          <div>📊 <strong>Masti:</strong> <span id="tdee-fat-val">70</span>g (20% kalorija)</div>
+          <div style="margin-top:.75rem;padding-top:.75rem;border-top:.5px solid var(--border);color:var(--text3);font-size:12px">
+            💡 <span id="tdee-desc">Održavaj ovaj unos za stabilnu težinu</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="applyTDEEGoals()" style="margin-top:.75rem">Primeni ove ciljeve</button>
+      </div>
+    </div>
+
+    <!-- RUČNI UNOS CILJEVA -->
+    <div class="card">
+      <div class="card-title">Ili unesi ručno</div>
       <div class="form-row f2">
         <div><label>Kalorije (kcal)</label><input type="number" id="g-kcal" placeholder="2000" min="500"></div>
         <div><label>Proteini (g)</label><input type="number" id="g-prot" placeholder="150" min="0"></div>
@@ -262,6 +317,8 @@ input:focus,select:focus{outline:none;border-color:var(--blue)}
       </div>
       <button class="btn btn-primary btn-full" onclick="saveGoals()">Sačuvaj ciljeve</button>
     </div>
+
+    <!-- NALOG I INFO -->
     <div class="card">
       <div class="card-title">Nalog</div>
       <div id="account-info" style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.8"></div>
@@ -815,6 +872,63 @@ function renderStats(){
 }
 
 function loadGoalForm(){document.getElementById('g-kcal').value=goals.kcal;document.getElementById('g-prot').value=goals.prot;document.getElementById('g-carb').value=goals.carb;document.getElementById('g-fat').value=goals.fat;}
+function calcTDEE(){
+  const pol=document.getElementById('tdee-pol').value;
+  const age=+document.getElementById('tdee-age').value;
+  const height=+document.getElementById('tdee-height').value;
+  const weight=+document.getElementById('tdee-weight').value;
+  const activity=+document.getElementById('tdee-activity').value;
+  const goal=document.getElementById('tdee-goal').value;
+  
+  if(!age||!height||!weight){toast('⚠️ Unesi sve podatke');return;}
+  
+  // Harris-Benedict formula
+  let bmr;
+  if(pol==='m'){
+    bmr=88.362+(13.397*weight)+(4.799*height)-(5.677*age);
+  }else{
+    bmr=447.593+(9.247*weight)+(3.098*height)-(4.330*age);
+  }
+  
+  const tdee=bmr*activity;
+  
+  // Prilagodi prema cilju
+  let adjTdee=tdee;
+  let desc='Održavaj ovaj unos za stabilnu težinu';
+  if(goal==='lose'){
+    adjTdee=tdee-500;
+    desc='Deficit od 500 kcal → gubici ~0.5kg/nedelji';
+  }else if(goal==='gain'){
+    adjTdee=tdee+500;
+    desc='Suficit od 500 kcal → gradnja mase ~0.5kg/nedelji';
+  }
+  
+  // Makroi: 30% proteini, 50% hidrati, 20% masti
+  const prot=Math.round((adjTdee*0.30)/4);
+  const carb=Math.round((adjTdee*0.50)/4);
+  const fat=Math.round((adjTdee*0.20)/9);
+  
+  // Prikaži rezultate
+  document.getElementById('tdee-kcal-val').textContent=Math.round(adjTdee);
+  document.getElementById('tdee-prot-val').textContent=prot;
+  document.getElementById('tdee-carb-val').textContent=carb;
+  document.getElementById('tdee-fat-val').textContent=fat;
+  document.getElementById('tdee-desc').textContent=desc;
+  document.getElementById('tdee-result').style.display='block';
+  
+  // Spremi za primenu
+  window.tdeeData={k:Math.round(adjTdee),p:prot,c:carb,f:fat};
+}
+
+function applyTDEEGoals(){
+  if(!window.tdeeData){toast('⚠️ Prvo izračunaj TDEE');return;}
+  document.getElementById('g-kcal').value=window.tdeeData.k;
+  document.getElementById('g-prot').value=window.tdeeData.p;
+  document.getElementById('g-carb').value=window.tdeeData.c;
+  document.getElementById('g-fat').value=window.tdeeData.f;
+  saveGoals();
+}
+
 async function saveGoals(){
   goals={...goals,kcal:+document.getElementById('g-kcal').value||2000,prot:+document.getElementById('g-prot').value||150,carb:+document.getElementById('g-carb').value||250,fat:+document.getElementById('g-fat').value||70};
   await dbSaveGoals();renderToday();toast('✓ Ciljevi sačuvani!');
