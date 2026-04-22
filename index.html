@@ -46,6 +46,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .macro-goal{font-size:10px;color:var(--text3);margin-top:3px}
 .prog{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin:5px 0 2px}
 .prog-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.profile-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:.5rem}
+.profile-stat{background:var(--bg2);border-radius:var(--r);padding:.875rem .625rem;text-align:center}
+.profile-icon{font-size:24px;margin-bottom:.5rem}
+.profile-label{font-size:10px;color:var(--text2);margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.2px}
+.profile-value{font-size:16px;font-weight:600;color:var(--text)}
 .meal-block{border:.5px solid var(--border);border-radius:var(--r);padding:.75rem;margin-bottom:.5rem}
 .meal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
 .meal-name{font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2)}
@@ -161,6 +166,7 @@ input:focus,select:focus{outline:none;border-color:var(--blue)}
   </div>
   <div class="tabs">
     <button class="tab active" onclick="gotoTab('today')">📊 Danas</button>
+    <button class="tab" onclick="gotoTab('profile')">👤 Profil</button>
     <button class="tab" onclick="gotoTab('log')">➕ Obrok</button>
     <button class="tab" onclick="gotoTab('weight')">⚖️ Kilaža</button>
     <button class="tab" onclick="gotoTab('stats')">📈 Statistike</button>
@@ -182,6 +188,111 @@ input:focus,select:focus{outline:none;border-color:var(--blue)}
       <div id="remaining-row" style="font-size:12px;color:var(--text2);border-top:.5px solid var(--border);padding-top:.5rem;display:flex;gap:16px;flex-wrap:wrap"></div>
     </div>
     <div id="today-meals"></div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div id="tab-profile" class="panel">
+    <!-- User Stats Card -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="card-title" style="margin:0">Tvoj profil</div>
+        <button class="btn btn-sm" onclick="gotoTab('goals')" style="font-size:12px">Uredi</button>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-stat">
+          <div class="profile-icon">👤</div>
+          <div class="profile-label">Starost</div>
+          <div class="profile-value" id="prof-age">—</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-icon">📏</div>
+          <div class="profile-label">Visina</div>
+          <div class="profile-value" id="prof-height">—</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-icon">⚖️</div>
+          <div class="profile-label">Kilaža</div>
+          <div class="profile-value" id="prof-weight">—</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-icon">📊</div>
+          <div class="profile-label">BMI</div>
+          <div class="profile-value" id="prof-bmi">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Progress Card -->
+    <div class="card">
+      <div class="card-title">Dnevni napredak</div>
+      
+      <!-- Calories Left/Over (LARGE) -->
+      <div style="text-align:center;margin-bottom:1.5rem;padding:1rem;background:var(--bg2);border-radius:var(--r)">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:.5rem">Preostalo za danas</div>
+        <div style="font-size:36px;font-weight:700;letter-spacing:-.5px" id="prof-calories-left">0</div>
+        <div style="font-size:13px;color:var(--text2)" id="prof-calories-status">kcal</div>
+      </div>
+
+      <!-- Macro bars -->
+      <div style="margin-bottom:.75rem">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:.25rem">
+          <span style="font-weight:500">Proteini</span>
+          <span style="color:var(--text2)" id="prof-prot-info">0/150g</span>
+        </div>
+        <div class="prog" style="background:var(--bg3)">
+          <div class="prog-fill" id="prof-prot-bar" style="width:0%;background:var(--blue)"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:.75rem">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:.25rem">
+          <span style="font-weight:500">Hidrati</span>
+          <span style="color:var(--text2)" id="prof-carb-info">0/250g</span>
+        </div>
+        <div class="prog" style="background:var(--bg3)">
+          <div class="prog-fill" id="prof-carb-bar" style="width:0%;background:var(--green)"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:.75rem">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:.25rem">
+          <span style="font-weight:500">Masti</span>
+          <span style="color:var(--text2)" id="prof-fat-info">0/70g</span>
+        </div>
+        <div class="prog" style="background:var(--bg3)">
+          <div class="prog-fill" id="prof-fat-bar" style="width:0%;background:var(--amber)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goal Info Card -->
+    <div class="card">
+      <div class="card-title">Tvoj cilj</div>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <div style="font-size:32px">🎯</div>
+        <div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:.25rem">Dnevni cilj kalorija</div>
+          <div style="font-size:18px;font-weight:600" id="prof-goal-kcal">2000</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:.25rem" id="prof-goal-desc">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weight Trend Card -->
+    <div class="card">
+      <div class="card-title">Trend kilaže (7 dana)</div>
+      <div style="height:120px;display:flex;align-items:flex-end;gap:4px;padding:1rem 0;border-bottom:.5px solid var(--border)" id="prof-weight-trend">
+        <div style="text-align:center;color:var(--text3);font-size:12px;width:100%">Nema podataka</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:.75rem 0;font-size:12px">
+        <div>
+          <span style="color:var(--text2)">Trenutna:</span> <strong id="prof-weight-current">—</strong>
+        </div>
+        <div>
+          <span style="color:var(--text2)">Promena:</span> <strong id="prof-weight-change" style="color:var(--green)">—</strong>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="tab-log" class="panel">
@@ -696,8 +807,160 @@ async function dbSaveGoals(){
   else{const{data}=await sb.from('goals').insert([payload]).select().single();if(data)goals._id=data.id;}
 }
 
+// ════════════════════════════════════════════
+// PROFILE FUNCTIONS
+// ════════════════════════════════════════════
+
+let userProfile={age:null,height_cm:null,gender:null};
+
+async function loadUserProfile(){
+  try{
+    const{data,error}=await sb.from('user_profile').select().eq('user_id',currentUser.id).single();
+    if(data){userProfile={age:data.age,height_cm:data.height_cm,gender:data.gender,id:data.id};}
+  }catch(e){console.log('User profile not found yet');}
+}
+
+async function saveUserProfile(){
+  try{
+    const payload={user_id:currentUser.id,age:userProfile.age,height_cm:userProfile.height_cm,gender:userProfile.gender,updated_at:new Date().toISOString()};
+    if(userProfile.id){
+      await sb.from('user_profile').update(payload).eq('id',userProfile.id);
+    }else{
+      const{data}=await sb.from('user_profile').insert([payload]).select().single();
+      if(data)userProfile.id=data.id;
+    }
+  }catch(e){console.error('Error saving profile:',e);}
+}
+
+function calculateBMI(weight,height){
+  if(!weight||!height)return null;
+  const h=height/100;
+  return(weight/(h*h)).toFixed(1);
+}
+
+function getTodayFoods(){
+  const t=today();
+  return foods.filter(f=>f.date===t);
+}
+
+function getTodayStats(){
+  const f=getTodayFoods();
+  const m=sumMacros(f.map(x=>({k:x.k*x.qty/100,p:x.p*x.qty/100,c:x.c*x.qty/100,f:x.f*x.qty/100})));
+  return{k:r(m.k),p:r(m.p),c:r(m.c),f:r(m.f)};
+}
+
+function getLastWeight(){
+  if(!weights.length)return null;
+  const sorted=[...weights].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  return sorted[0];
+}
+
+function getLast7Weights(){
+  const today_date=today();
+  const sorted=[...weights].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const last7=sorted.filter(w=>{
+    const d=new Date(w.date);
+    const t=new Date(today_date);
+    const diff=(t-d)/(1000*60*60*24);
+    return diff>=0&&diff<=7;
+  });
+  return last7;
+}
+
+function renderProfile(){
+  // Load data
+  loadUserProfile();
+  
+  // Get current weight
+  const lastW=getLastWeight();
+  const currentW=lastW?lastW.val:null;
+  
+  // Calculate stats
+  const todayStats=getTodayStats();
+  const remaining={k:goals.kcal-todayStats.k,p:goals.prot-todayStats.p,c:goals.carb-todayStats.c,f:goals.fat-todayStats.f};
+  
+  // Calculate BMI
+  const bmi=calculateBMI(currentW,userProfile.height_cm);
+  
+  // Render user stats
+  document.getElementById('prof-age').textContent=userProfile.age?`${userProfile.age} god.`:'-';
+  document.getElementById('prof-height').textContent=userProfile.height_cm?`${userProfile.height_cm} cm`:'-';
+  document.getElementById('prof-weight').textContent=currentW?`${currentW} kg`:'-';
+  document.getElementById('prof-bmi').textContent=bmi?bmi:'−';
+  
+  // Calories left (color-coded)
+  const kcalLeft=remaining.k;
+  const profCalEl=document.getElementById('prof-calories-left');
+  const profCalStatusEl=document.getElementById('prof-calories-status');
+  
+  profCalEl.textContent=Math.abs(kcalLeft);
+  if(kcalLeft>0){
+    profCalEl.style.color='var(--green)';
+    profCalStatusEl.textContent=`kcal preostalo`;
+  }else if(kcalLeft<0){
+    profCalEl.style.color='var(--red)';
+    profCalStatusEl.textContent=`kcal preko`;
+  }else{
+    profCalEl.style.color='var(--text)';
+    profCalStatusEl.textContent=`kcal (tačno!)`;
+  }
+  
+  // Macro bars
+  const setMacroBar=(elemId,infoId,current,goal,barColor)=>{
+    const pct=Math.min((current/goal)*100,100);
+    document.getElementById(elemId).style.width=pct+'%';
+    document.getElementById(elemId).style.background=barColor;
+    document.getElementById(infoId).textContent=`${r(current)}/${goal}g`;
+  };
+  setMacroBar('prof-prot-bar','prof-prot-info',todayStats.p,goals.prot,'var(--blue)');
+  setMacroBar('prof-carb-bar','prof-carb-info',todayStats.c,goals.carb,'var(--green)');
+  setMacroBar('prof-fat-bar','prof-fat-info',todayStats.f,goals.fat,'var(--amber)');
+  
+  // Goal info
+  document.getElementById('prof-goal-kcal').textContent=goals.kcal;
+  document.getElementById('prof-goal-desc').textContent=kcalLeft>0?`${r(kcalLeft)} kcal preostalo`:`Prekoračio si za ${r(Math.abs(kcalLeft))} kcal`;
+  
+  // Weight trend
+  const last7=getLast7Weights();
+  const trendEl=document.getElementById('prof-weight-trend');
+  if(last7.length>1){
+    const minW=Math.min(...last7.map(w=>w.val))-1;
+    const maxW=Math.max(...last7.map(w=>w.val))+1;
+    const range=maxW-minW;
+    
+    trendEl.innerHTML=last7.map(w=>{
+      const h=((w.val-minW)/range)*100;
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:help" title="${w.date}: ${w.val}kg"><div style="width:100%;height:${Math.max(h,20)}px;background:var(--blue);border-radius:2px;opacity:0.6"></div><div style="font-size:9px;color:var(--text3)">${w.val}kg</div></div>`;
+    }).join('');
+  }else if(currentW){
+    trendEl.innerHTML=`<div style="text-align:center;color:var(--text3);width:100%">Dodaj više merenja za trend</div>`;
+  }
+  
+  document.getElementById('prof-weight-current').textContent=currentW?`${currentW} kg`:'-';
+  
+  // Weight change (7 days)
+  if(last7.length>1){
+    const first=last7[0].val;
+    const last=last7[last7.length-1].val;
+    const change=last-first;
+    const changeEl=document.getElementById('prof-weight-change');
+    if(change<0){
+      changeEl.textContent=`${change.toFixed(1)} kg ↓`;
+      changeEl.style.color='var(--green)';
+    }else if(change>0){
+      changeEl.textContent=`+${change.toFixed(1)} kg ↑`;
+      changeEl.style.color='var(--red)';
+    }else{
+      changeEl.textContent='0 kg';
+      changeEl.style.color='var(--text2)';
+    }
+  }else{
+    document.getElementById('prof-weight-change').textContent='-';
+  }
+}
+
 async function initApp(){
-  setLoading(true);await loadData();setLoading(false);
+  setLoading(true);await loadData();await loadUserProfile();setLoading(false);
   document.getElementById('log-date').value=today();
   document.getElementById('w-date').value=today();
   document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('sr-RS',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
@@ -705,11 +968,12 @@ async function initApp(){
 }
 
 function gotoTab(t){
-  const names=['today','log','weight','stats','goals'];
+  const names=['today','profile','log','weight','stats','goals'];
   document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',names[i]===t));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='today')renderToday();
+  if(t==='profile')renderProfile();
   if(t==='log'){renderLogPreview();setTimeout(()=>document.getElementById('food-search').focus(),100);}
   if(t==='weight')renderWeight();
   if(t==='stats')renderStats();
@@ -808,7 +1072,7 @@ async function addFood(){
   foods.push(saved);
   ['c-name','c-kcal','c-prot','c-carb','c-fat','food-search'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('c-qty').value=100;document.getElementById('qty-preview').textContent='';
-  closeDrop();renderLogPreview();renderToday();toast('✓ Dodano!');
+  closeDrop();renderLogPreview();renderToday();if(document.getElementById('tab-profile').classList.contains('active'))renderProfile();toast('✓ Dodano!');
 }
 function renderLogPreview(){
   const d=document.getElementById('log-date').value,m=document.getElementById('log-meal').value;
@@ -848,7 +1112,7 @@ async function addWeight(){
   const saved=await dbAddWeight({date:d,val:v,note});
   if(!saved)return;
   weights=weights.filter(w=>w.date!==d);weights.push(saved);
-  renderWeight();renderToday();
+  renderWeight();renderToday();if(document.getElementById('tab-profile').classList.contains('active'))renderProfile();
   document.getElementById('w-val').value='';document.getElementById('w-note').value='';
   toast('✓ Kilaža sačuvana!');
 }
@@ -922,11 +1186,20 @@ function calcTDEE(){
 
 function applyTDEEGoals(){
   if(!window.tdeeData){toast('⚠️ Prvo izračunaj TDEE');return;}
+  
+  // Sačuvaj profil podatke
+  userProfile.age=+document.getElementById('tdee-age').value;
+  userProfile.height_cm=+document.getElementById('tdee-height').value;
+  userProfile.gender=document.getElementById('tdee-pol').value;
+  saveUserProfile();
+  
+  // Postavi goals
   document.getElementById('g-kcal').value=window.tdeeData.k;
   document.getElementById('g-prot').value=window.tdeeData.p;
   document.getElementById('g-carb').value=window.tdeeData.c;
   document.getElementById('g-fat').value=window.tdeeData.f;
   saveGoals();
+  toast('✅ Profil i ciljevi sačuvani!');
 }
 
 async function saveGoals(){
